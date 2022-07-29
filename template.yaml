@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: This api serves to track steam games a user purchases, as well as provide api calls to retrieve purchase information.
+
+Resources:
+  SteamGameTrackerLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: "steam-game-tracker-lambda"
+      Handler: lambda_function.handler
+      Runtime: python3.9
+      CodeUri: .
+      MemorySize: 1024
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId:
+              Ref: SteamGameTrackerGateway
+            Path: /{proxy+}
+            Method: ANY
+      Environment:
+        Variables:
+          STEAM_API_KEY: "{{resolve:ssm:steam_api_key}}"
+      Role: !Sub arn:aws:iam::${AWS::AccountId}:role/steamGameTrackerLambdaRole
+  SteamGameTrackerGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      OpenApiVersion: '3.0.0'

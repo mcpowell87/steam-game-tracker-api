@@ -1,0 +1,13 @@
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.tox
+  | \.env
+  | blib2to3
+  | tests/data
+  | profiling
+)/
+'''
