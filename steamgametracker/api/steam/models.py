@@ -1,7 +1,6 @@
 from pydantic.main import BaseModel
 from typing import List, Optional
 
-from sqlalchemy import false
 from enum import Enum
 
 
@@ -12,6 +11,12 @@ class AppType(Enum):
     ADVERTISING = "advertising"
     MOD = "mod"
     VIDEO = "video"
+    MUSIC = "music"
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls):
+        return cls(cls.UNKNOWN)
 
 
 class PriceOverview(BaseModel):
@@ -33,6 +38,12 @@ class AppGenre(BaseModel):
     description: str
 
 
+class RelatedApp(BaseModel):
+    appid: Optional[int]
+    name: Optional[str]
+    description: Optional[str]
+
+
 class SteamApp(BaseModel):
     appid: int
     name: str
@@ -49,6 +60,9 @@ class SteamApp(BaseModel):
     genres: Optional[List[AppGenre]]
     background: Optional[str]
     background_raw: Optional[str]
+    dlc: Optional[List[int]]
+    fullgame: Optional[List[RelatedApp]]
+    demos: Optional[List[RelatedApp]]
 
     def __init__(self, appid: int = None, steam_appid: int = None, **kwargs):
         app_id = appid if appid else steam_appid
@@ -62,11 +76,10 @@ class SteamAppListResponse(BaseModel):
 class OwnedGame(BaseModel):
     appid: int
     name: Optional[str]
-    playtime_2weeks: int
+    playtime_2weeks: Optional[int]
     playtime_forever: int
     img_icon: Optional[str]
     img_logo_url: Optional[str]
-    has_community_visible_stats: bool
 
 
 class OwnedGamesResponse(BaseModel):

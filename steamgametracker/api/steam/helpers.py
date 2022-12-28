@@ -55,7 +55,7 @@ def get_owned_games(steam_id: int) -> OwnedGamesResponse:
         steam_id (int): Steam user id to get owned games for
     """
     r = requests.get(
-        f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={settings.STEAM_API_KEY}&steamid={steam_id}&format=json"
+        f"https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={settings.STEAM_API_KEY}&steamid={steam_id}&format=json&include_played_free_games=true&include_appinfo=true"
     )
     response = r.json()
     return OwnedGamesResponse(**response["response"])
