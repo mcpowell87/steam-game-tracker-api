@@ -19,10 +19,6 @@ router = InferringRouter()
 
 @cbv(router)
 class SteamRouter:
-    @router.get("/apps", operation_id="getAllApps")
-    def get_steam_apps(self) -> List[SteamApp]:
-        return get_steam_apps()
-
     @router.get("/app/{app_id}", operation_id="getApp")
     def get_steam_app(self, app_id: int) -> SteamApp:
         return get_steam_app(app_id)

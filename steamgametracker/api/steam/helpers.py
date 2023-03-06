@@ -5,7 +5,6 @@ from typing import List
 from steamgametracker.config import settings
 from steamgametracker.api.steam.models import (
     SteamApp,
-    SteamAppListResponse,
     OwnedGamesResponse,
     PlayerSummary,
 )
@@ -20,8 +19,7 @@ def get_steam_apps() -> List[SteamApp]:
     """
     r = requests.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/")
     json = r.json()
-    response = SteamAppListResponse(**json["applist"])
-    return response.apps
+    return json
 
 
 def get_steam_app(app_id: int) -> SteamApp:

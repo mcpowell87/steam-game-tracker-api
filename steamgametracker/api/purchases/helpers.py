@@ -1,3 +1,4 @@
+import logging
 from fastapi import HTTPException, status
 from typing import List
 from steamgametracker.api.purchases.models import SteamPurchase, PurchaseStats
@@ -8,6 +9,9 @@ from steamgametracker.api.purchases.dao import (
     get_all_purchases,
 )
 from steamgametracker.api.steam.helpers import get_owned_games
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def get_purchases(
@@ -25,12 +29,19 @@ def get_purchases(
     Returns:
         List[SteamPurchase]: A list of matching steam purchases
     """
-    if not start and not end and not search:
-        return get_all_purchases(steam_id)
-    elif search:
-        return get_purchases_by_search_term(steam_id, search)
-    else:
-        return get_purchases_in_range(steam_id, start, end)
+    logger.info(
+        f"Getting purchases for {steam_id}\nstart::{start} end::{end} search::{search}"
+    )
+    try:
+        if not start and not end and not search:
+            return get_all_purchases(steam_id)
+        elif search:
+            return get_purchases_by_search_term(steam_id, search)
+        else:
+            return get_purchases_in_range(steam_id, start, end)
+    except Exception:
+        logger.exception("Exception while getting purchases.")
+        raise
 
 
 def get_purchase_stats(steam_id: str) -> PurchaseStats:
